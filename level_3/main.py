@@ -21,9 +21,9 @@ def get_captcha(req_session, url):
     return pytesseract.image_to_string(img)
 
 def do_post_crack():
-    url = "http://158.69.76.135"
-    captcha = url + "/captcha.php"
-    url = url + "/level3.php"
+    base_url = "http://158.69.76.135"
+    captcha = base_url + "/captcha.php"
+    url = base_url + "/level3.php"
     hs = { 'Referer': url,
         'Content-Type': 'application/x-www-form-urlencoded',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'} 
@@ -38,7 +38,7 @@ def do_post_crack():
             key = line.get('value')
     captcha_val = get_captcha(session, captcha)
 
-    payload = {'id': '496', 'key': key, 'holdthedoor': 'submit',
+    payload = {'id': '1448', 'key': key, 'holdthedoor': 'submit',
                 'captcha': captcha_val}
 
     r = session.post(url, headers=hs, data=payload)
@@ -50,16 +50,16 @@ def do_post_crack():
     return True
 
 failed = 0
-votes = 1024
+num_req = 1024
 i = 0
-while i < votes:
+while i < num_req:
     if failed > 10:
         break
     res = do_post_crack()
     if res == False:
         print("failed to post {}th request".format(i))
         failed += 1
-        votes += 1
+        num_req += 1
     if i % 10 == 0:
         print("posted {} requests to server".format(i))
     i += 1
