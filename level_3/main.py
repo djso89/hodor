@@ -12,6 +12,9 @@ try:
     import Image
 except ImportError:
     from PIL import Image
+    
+    
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\USER\AppData\Local\Tesseract-OCR\tesseract.exe'
 
 def get_captcha(req_session, url):
     """pulls captcha value from url that points to an image
@@ -25,7 +28,6 @@ def do_post_crack():
     captcha = base_url + "/captcha.php"
     url = base_url + "/level3.php"
     hs = { 'Referer': url,
-        'Content-Type': 'application/x-www-form-urlencoded',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'} 
 
     session = requests.session()
@@ -37,9 +39,11 @@ def do_post_crack():
         if line.get('name') == "key":
             key = line.get('value')
     captcha_val = get_captcha(session, captcha)
+    
+    print(captcha_val[:4])
 
     payload = {'id': '1448', 'key': key, 'holdthedoor': 'submit',
-                'captcha': captcha_val}
+                'captcha': captcha_val[:4]}
 
     r = session.post(url, headers=hs, data=payload)
     status_code = r.status_code
